@@ -1,6 +1,5 @@
 package polybellum.HTTPUtils;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -32,61 +31,40 @@ public class WebClient {
 		connection.setReadTimeout(_readTimeout);
 	}
 	
-	public Response get(URL baseUrl, String... parameters){
-		HttpURLConnection connection = null;
-		InputStream inputStream = null;
-		
+	public Response get(URL baseUrl, String... queryParameters){
 		try {
-		
-			//Append query string if values set TODO make function for this in a Util
-			//TODO turn Querystring into a generic name value pairs object
-			if(parameters.length > 0){
-				//Check for even name values
-				if(parameters.length % 2 == 1) return new ExceptionResponse("There must be an even number of parameters set for a query string for name and value pairs.");
-				
-				QueryString queryString = new QueryString();
-				String paramName = null;
-				for(String param : parameters){
-					if(paramName == null){
-						paramName = param;
-					}else{
-						queryString.put(paramName, param);
-						paramName = null;
-					}
-				}
-				
-				baseUrl = new URL(baseUrl.toString() + queryString.toQueryString());
-			}
-		
-			connection = prepareConnection(baseUrl, "GET"); //TODO make enum
-			inputStream = connection.getInputStream();
-			return new HTTPResponse(connection.getResponseCode(), readInputStreamBytes(inputStream));
-		}
-		catch (Exception e) {
-			return new ExceptionResponse(e.getMessage()); 
-		}
-		finally {
-				if(connection != null) connection.disconnect();
-				if (inputStream != null) {
-					try {
-						inputStream.close();
-					} catch (IOException e) {
-						return new ExceptionResponse(e.getMessage());
-					} 
-				}
+			URL url = appendQueryStringToUrl(baseUrl, queryParameters);
+			return httpRequest(url, HTTP.GET, null);
+		} catch (Exception e) {
+			return new ExceptionResponse(e.getMessage());
 		}
 	}
 	
-	private byte[] readInputStreamBytes(InputStream inputStream) throws IOException{ //TODO put in helper util class
-		  ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		  byte[] byteChunk = new byte[4096]; //TODO make constant
-		  int n;
-
-		  while ( (n = inputStream.read(byteChunk)) > 0 ) {
-		    baos.write(byteChunk, 0, n);
-		  }
-		  
-		  return baos.toByteArray();
+	public Response get(URL baseUrl, NameValueSet nvs){
+		try {
+			URL url = appendQueryStringToUrl(baseUrl, nvs);
+			return httpRequest(url, HTTP.GET, null);
+		} catch (Exception e) {
+			return new ExceptionResponse(e.getMessage());
+		}
+	}
+	
+	private URL appendQueryStringToUrl(URL baseUrl, String... parameters) throws Exception{
+		if(parameters.length == 0){
+			return baseUrl;
+		}
+		
+		NameValueSet nvs = NameValueSet.fromStringArray(parameters);
+		
+		return appendQueryStringToUrl(baseUrl, nvs);
+	}
+	
+	private URL appendQueryStringToUrl(URL baseUrl, NameValueSet nvs) throws Exception{
+		if(nvs.size() == 0){
+			return baseUrl;
+		}
+		
+		return new URL(baseUrl.toExternalForm() + nvs.toQueryString());
 	}
 	
 	public Response get(String baseUrl, String... parameters){
@@ -97,20 +75,97 @@ public class WebClient {
 		}
 	}
 	
-	//TODO group these they're so similar (to get)
-	//TODO make this accept parameter array data or block bytes of data
-	//TODO make overloads to accept a parameter object instead of string array
-	public Response post(URL url, String data){
+	public Response get(String baseUrl, NameValueSet nvs){
+		try {
+			return get(new URL(baseUrl), nvs);
+		} catch (MalformedURLException e) {
+			return new ExceptionResponse(e.getMessage());
+		}
+	}
+	
+	public Response post(URL baseUrl, byte[] data){
+		return httpRequest(baseUrl, HTTP.POST, data);
+	}
+	
+	public Response post(URL baseURL, String... data){
+		if(data.length == 0){
+			return post(baseURL, new byte[0]);
+		}else{
+			try{
+				return post(baseURL, NameValueSet.fromStringArray(data));
+			}catch(Exception e){
+				return new ExceptionResponse(e.getMessage());
+			}
+		}
+	}
+	
+	public Response post(URL baseURL, NameValueSet nvs){
+		return post(baseURL, nvs.toString().getBytes());
+	}
+	
+	public Response post(String url, byte[] data){
+		try {
+			return post(new URL(url), data);
+		} catch (MalformedURLException e) {
+			return new ExceptionResponse(e.getMessage());
+		}
+	}
+	
+	public Response post(String url, String... data){
+		try {
+			return post(new URL(url), data);
+		} catch (MalformedURLException e) {
+			return new ExceptionResponse(e.getMessage());
+		}
+	}
+	
+	public Response post(String url, NameValueSet nvs){
+		try {
+			return post(new URL(url), nvs);
+		} catch (MalformedURLException e) {
+			return new ExceptionResponse(e.getMessage());
+		}
+	}
+	
+	public Response put(String url, byte[] data){
+		try {
+			return put(new URL(url), data);
+		} catch (MalformedURLException e) {
+			return new ExceptionResponse(e.getMessage());
+		}
+	}
+	
+	public Response put(URL url, byte[] data){
+		return httpRequest(url, HTTP.PUT, data);
+	}
+	
+	public Response put(URL url, String data){
+		return put(url, data.getBytes());
+	}
+	
+	public Response put(String url, String data){
+		try {
+			return put(new URL(url), data.getBytes());
+		} catch (MalformedURLException e) {
+			return new ExceptionResponse(e.getMessage());
+		}
+	}
+	
+	private Response httpRequest(URL url, String method, byte[] outputData){
 		HttpURLConnection connection = null;
 		InputStream inputStream = null;
 		try {
-			byte[] dataBytes = data.getBytes();
-			
-			connection = prepareConnection(url, "POST", dataBytes.length); //TODO make enum
-			OutputStream wr = connection.getOutputStream();
-			wr.write(dataBytes);
+			if(outputData != null){	
+				setRequestProperty("Content-Length", String.valueOf(outputData.length));
+			}
+			connection = prepareConnection(url, method, outputData != null);
+			if(outputData != null){
+				OutputStream wr = connection.getOutputStream();
+				wr.write(outputData);
+				wr.close();
+			}
 			inputStream = connection.getInputStream();
-			return new HTTPResponse(connection.getResponseCode(), readInputStreamBytes(inputStream));
+			return new HTTPResponse(connection.getResponseCode(), HTTPUtilities.readInputStreamBytes(inputStream));
 		}
 		catch (IOException e) {
 			return new ExceptionResponse(e.getMessage()); 
@@ -127,29 +182,11 @@ public class WebClient {
 		}
 	}
 	
-	public Response post(String url, String data){
-		try {
-			return post(new URL(url), data);
-		} catch (MalformedURLException e) {
-			return new ExceptionResponse(e.getMessage());
-		}
-	}
-	
-	private HttpURLConnection prepareConnection(URL url, String method) throws IOException{
+	private HttpURLConnection prepareConnection(URL url, String method, boolean doOutput) throws IOException{
 		HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 		setConnectionProperties(connection);
 		connection.setRequestMethod(method);
-		connection.connect();
-		return connection;
-	}
-	
-	//TODO group these
-	private HttpURLConnection prepareConnection(URL url, String method, int contentLength) throws IOException{
-		HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-		setRequestProperty("Content-Length", String.valueOf(contentLength));
-		setConnectionProperties(connection);
-		connection.setRequestMethod(method);
-		connection.setDoOutput(true);
+		connection.setDoOutput(doOutput);
 		return connection;
 	}
 	
@@ -161,6 +198,10 @@ public class WebClient {
 	public void setConnectTimeout(int timeout){
 		if(timeout < 0) throw new IllegalArgumentException("Timeout cannot be negative!");
 		_connectTimeout = timeout;
+	}
+	
+	public void setContentType(String type){
+		this.setRequestProperty("Content-Type", type);
 	}
 	
 }

@@ -25,7 +25,8 @@ public class Response {
 	}
 	
 	public String getDataString(){
-		return new String(getDataByteArray()); //TODO MAKE THIS NULL SAFE AND STUFF
+		if(_data == null) return "";
+		return new String(getDataByteArray());
 	}
 	
 	public String getDataString(String encoding){
