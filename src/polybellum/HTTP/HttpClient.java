@@ -33,8 +33,8 @@ public class HttpClient {
 	
 	public Response get(URL baseUrl, String... queryParameters){
 		try {
-			URL url = appendQueryStringToUrl(baseUrl, queryParameters);
-			return httpRequest(url, HTTPVerbs.GET.toString(), null);
+			URL url = HTTPUtil.appendQueryStringToUrl(baseUrl, queryParameters);
+			return httpRequest(url, HTTPVerb.GET.toString(), null);
 		} catch (Exception e) {
 			return new ExceptionResponse(e.getMessage());
 		}
@@ -42,29 +42,11 @@ public class HttpClient {
 	
 	public Response get(URL baseUrl, NameValueSet nvs){
 		try {
-			URL url = appendQueryStringToUrl(baseUrl, nvs);
-			return httpRequest(url, HTTPVerbs.GET.toString(), null);
+			URL url = HTTPUtil.appendQueryStringToUrl(baseUrl, nvs);
+			return httpRequest(url, HTTPVerb.GET.toString(), null);
 		} catch (Exception e) {
 			return new ExceptionResponse(e.getMessage());
 		}
-	}
-	
-	private URL appendQueryStringToUrl(URL baseUrl, String... parameters) throws Exception{
-		if(parameters.length == 0){
-			return baseUrl;
-		}
-		
-		NameValueSet nvs = NameValueSet.fromStringArray(parameters);
-		
-		return appendQueryStringToUrl(baseUrl, nvs);
-	}
-	
-	private URL appendQueryStringToUrl(URL baseUrl, NameValueSet nvs) throws Exception{
-		if(nvs.size() == 0){
-			return baseUrl;
-		}
-		
-		return new URL(baseUrl.toExternalForm() + nvs.toQueryString());
 	}
 	
 	public Response get(String baseUrl, String... parameters){
@@ -84,7 +66,7 @@ public class HttpClient {
 	}
 	
 	public Response post(URL baseUrl, byte[] data){
-		return httpRequest(baseUrl, HTTPVerbs.POST.toString(), data);
+		return httpRequest(baseUrl, HTTPVerb.POST.toString(), data);
 	}
 	
 	public Response post(URL baseURL, String... data){
@@ -136,7 +118,7 @@ public class HttpClient {
 	}
 	
 	public Response put(URL url, byte[] data){
-		return httpRequest(url, HTTPVerbs.PUT.toString(), data);
+		return httpRequest(url, HTTPVerb.PUT.toString(), data);
 	}
 	
 	public Response put(URL url, String data){
@@ -180,7 +162,7 @@ public class HttpClient {
 	}
 	
 	public Response delete(URL url){
-		return httpRequest(url, HTTPVerbs.DELETE.toString(), null);
+		return httpRequest(url, HTTPVerb.DELETE.toString(), null);
 	}
 	
 	public Response head(String url){
@@ -192,11 +174,11 @@ public class HttpClient {
 	}
 	
 	public Response head(URL url){
-		return httpRequest(url, HTTPVerbs.HEAD.toString(), null);
+		return httpRequest(url, HTTPVerb.HEAD.toString(), null);
 	}
 	
 	public Response options(URL baseUrl, byte[] data){
-		return httpRequest(baseUrl, HTTPVerbs.OPTIONS.toString(), data);
+		return httpRequest(baseUrl, HTTPVerb.OPTIONS.toString(), data);
 	}
 	
 	public Response options(URL baseURL, String... data){
@@ -240,7 +222,7 @@ public class HttpClient {
 	}
 	
 	public Response trace(URL baseUrl, byte[] data){
-		return httpRequest(baseUrl, HTTPVerbs.TRACE.toString(), data);
+		return httpRequest(baseUrl, HTTPVerb.TRACE.toString(), data);
 	}
 	
 	public Response trace(URL baseURL, String... data){
@@ -297,7 +279,7 @@ public class HttpClient {
 				wr.close();
 			}
 			inputStream = connection.getInputStream();
-			return new HTTPResponse(connection.getResponseCode(), HTTPUtilities.readInputStreamBytes(inputStream));
+			return new HTTPResponse(connection.getResponseCode(), HTTPUtil.readInputStreamBytes(inputStream));
 		}
 		catch (IOException e) {
 			return new ExceptionResponse(e.getMessage()); 
@@ -337,19 +319,22 @@ public class HttpClient {
 	}
 	
 	public Response execute(Request request){
-		if(request.getVerb().equals(HTTPVerbs.GET.toString())){
+		if(!request.isValid()){
+			return new ExceptionResponse("The request is invalid: " + request.getErrorMessage());
+		}
+		if(request.getVerb().equals(HTTPVerb.GET.toString())){
 			return get(request.getURL());
-		}else if(request.getVerb().equals(HTTPVerbs.POST.toString())){
+		}else if(request.getVerb().equals(HTTPVerb.POST.toString())){
 			return post(request.getURL(), request.getDataBytes());
-		}else if(request.getVerb().equals(HTTPVerbs.HEAD.toString())){
+		}else if(request.getVerb().equals(HTTPVerb.HEAD.toString())){
 			return head(request.getURL());
-		}else if(request.getVerb().equals(HTTPVerbs.PUT.toString())){
+		}else if(request.getVerb().equals(HTTPVerb.PUT.toString())){
 			return put(request.getURL(), request.getDataBytes());
-		}else if(request.getVerb().equals(HTTPVerbs.OPTIONS.toString())){
+		}else if(request.getVerb().equals(HTTPVerb.OPTIONS.toString())){
 			return options(request.getURL(), request.getDataBytes());
-		}else if(request.getVerb().equals(HTTPVerbs.TRACE.toString())){
+		}else if(request.getVerb().equals(HTTPVerb.TRACE.toString())){
 			return trace(request.getURL(), request.getDataBytes());
-		}else if(request.getVerb().equals(HTTPVerbs.DELETE.toString())){
+		}else if(request.getVerb().equals(HTTPVerb.DELETE.toString())){
 			return delete(request.getURL());
 		}else{
 			return new ExceptionResponse("A valid HTTP verb must be specified.");
