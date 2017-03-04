@@ -1,3 +1,6 @@
+// Copyright (C) 2017 polybellum
+// Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
+	
 package polybellum.HTTP;
 
 /**
@@ -20,7 +23,8 @@ ____////////////////////////////////////////////////////////////////////////////
 	 * The Content-type property set to "text/plain"
 	 */
 	public SimpleHttpClient(){
-		setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+		setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; "
+				+ "en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 		this.setConnectTimeout(8000);
 		this.setReadTimeout(60000);
 		setContentType("text/plain");
