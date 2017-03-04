@@ -336,4 +336,24 @@ public class WebClient {
 		this.setRequestProperty("Content-type", type);
 	}
 	
+	public Response execute(Request request){
+		if(request.getVerb().equals(HTTP.GET)){
+			return get(request.getURL());
+		}else if(request.getVerb().equals(HTTP.POST)){
+			return post(request.getURL(), request.getDataBytes());
+		}else if(request.getVerb().equals(HTTP.HEAD)){
+			return head(request.getURL());
+		}else if(request.getVerb().equals(HTTP.PUT)){
+			return put(request.getURL(), request.getDataBytes());
+		}else if(request.getVerb().equals(HTTP.OPTIONS)){
+			return options(request.getURL(), request.getDataBytes());
+		}else if(request.getVerb().equals(HTTP.TRACE)){
+			return trace(request.getURL(), request.getDataBytes());
+		}else if(request.getVerb().equals(HTTP.DELETE)){
+			return delete(request.getURL());
+		}else{
+			return new ExceptionResponse("A valid HTTP verb must be specified.");
+		}
+	}
+	
 }
