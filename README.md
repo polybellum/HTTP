@@ -1,6 +1,6 @@
 # polybellum HTTP Library  
   
-Written by Nic Wilson (github.com/mtear)  
+Written by Nic Wilson @mtear (github.com/mtear)  
 
 A simple Http Client for working with Requests, Responses, and REST APIs using Http Verbs.  
   
