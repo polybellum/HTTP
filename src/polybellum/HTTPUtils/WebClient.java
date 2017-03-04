@@ -151,6 +151,138 @@ public class WebClient {
 		}
 	}
 	
+	public Response put(String url, ContentType contentType, byte[] data){
+		setContentType(contentType.getValue());
+		return put(url, data);
+	}
+	
+	public Response put(URL url, ContentType contentType, byte[] data){
+		setContentType(contentType.getValue());
+		return put(url, data);
+	}
+	
+	public Response put(URL url, ContentType contentType, String data){
+		setContentType(contentType.getValue());
+		return put(url, data);
+	}
+	
+	public Response put(String url, ContentType contentType, String data){
+		setContentType(contentType.getValue());
+		return put(url, data);
+	}
+	
+	public Response delete(String url){
+		try {
+			return delete(new URL(url));
+		} catch (MalformedURLException e) {
+			return new ExceptionResponse(e.getMessage());
+		}
+	}
+	
+	public Response delete(URL url){
+		return httpRequest(url, HTTP.DELETE, null);
+	}
+	
+	public Response head(String url){
+		try {
+			return head(new URL(url));
+		} catch (MalformedURLException e) {
+			return new ExceptionResponse(e.getMessage());
+		}
+	}
+	
+	public Response head(URL url){
+		return httpRequest(url, HTTP.HEAD, null);
+	}
+	
+	public Response options(URL baseUrl, byte[] data){
+		return httpRequest(baseUrl, HTTP.OPTIONS, data);
+	}
+	
+	public Response options(URL baseURL, String... data){
+		if(data.length == 0){
+			return options(baseURL, new byte[0]);
+		}else{
+			try{
+				return options(baseURL, NameValueSet.fromStringArray(data));
+			}catch(Exception e){
+				return new ExceptionResponse(e.getMessage());
+			}
+		}
+	}
+	
+	public Response options(URL baseURL, NameValueSet nvs){
+		return options(baseURL, nvs.toString().getBytes());
+	}
+	
+	public Response options(String url, byte[] data){
+		try {
+			return options(new URL(url), data);
+		} catch (MalformedURLException e) {
+			return new ExceptionResponse(e.getMessage());
+		}
+	}
+	
+	public Response options(String url, String... data){
+		try {
+			return options(new URL(url), data);
+		} catch (MalformedURLException e) {
+			return new ExceptionResponse(e.getMessage());
+		}
+	}
+	
+	public Response options(String url, NameValueSet nvs){
+		try {
+			return options(new URL(url), nvs);
+		} catch (MalformedURLException e) {
+			return new ExceptionResponse(e.getMessage());
+		}
+	}
+	
+	public Response trace(URL baseUrl, byte[] data){
+		return httpRequest(baseUrl, HTTP.TRACE, data);
+	}
+	
+	public Response trace(URL baseURL, String... data){
+		if(data.length == 0){
+			return trace(baseURL, new byte[0]);
+		}else{
+			try{
+				return trace(baseURL, NameValueSet.fromStringArray(data));
+			}catch(Exception e){
+				return new ExceptionResponse(e.getMessage());
+			}
+		}
+	}
+	
+	public Response trace(URL baseURL, NameValueSet nvs){
+		return trace(baseURL, nvs.toString().getBytes());
+	}
+	
+	public Response trace(String url, byte[] data){
+		try {
+			return trace(new URL(url), data);
+		} catch (MalformedURLException e) {
+			return new ExceptionResponse(e.getMessage());
+		}
+	}
+	
+	public Response trace(String url, String... data){
+		try {
+			return trace(new URL(url), data);
+		} catch (MalformedURLException e) {
+			return new ExceptionResponse(e.getMessage());
+		}
+	}
+	
+	public Response trace(String url, NameValueSet nvs){
+		try {
+			return trace(new URL(url), nvs);
+		} catch (MalformedURLException e) {
+			return new ExceptionResponse(e.getMessage());
+		}
+	}
+	
 	private Response httpRequest(URL url, String method, byte[] outputData){
 		HttpURLConnection connection = null;
 		InputStream inputStream = null;
@@ -201,7 +333,7 @@ public class WebClient {
 	}
 	
 	public void setContentType(String type){
-		this.setRequestProperty("Content-Type", type);
+		this.setRequestProperty("Content-type", type);
 	}
 	
 }
