@@ -320,7 +320,7 @@ public class HttpClient {
 	
 	public Response execute(Request request){
 		if(!request.isValid()){
-			return new ExceptionResponse("The request is invalid: " + request.getErrorMessage());
+			return new ExceptionResponse("The request specified is invalid: " + request.getErrorMessage());
 		}
 		if(request.getVerb().equals(HTTPVerb.GET.toString())){
 			return get(request.getURL());

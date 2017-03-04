@@ -48,7 +48,7 @@ public class Request {
 		try{
 			return new Request(true, new URL(url), verb, null);
 		}catch(MalformedURLException e){
-			return new Request(false, null, null, null);
+			return new Request(false, e.getMessage());
 		}
 	}
 	
@@ -60,23 +60,63 @@ public class Request {
 		try{
 			return new Request(true, new URL(url), verb.toString(), dataBytes);
 		}catch(MalformedURLException e){
-			return new Request(false, null, null, null);
+			return new Request(false, e.getMessage());
 		}
 	}
 	
 	public static Request build(URL baseUrl, HTTPVerb verb, NameValueSet nvs){
 		try {
-			return new Request(true, HTTPUtil.appendQueryStringToUrl(baseUrl, nvs), verb.toString(), null);
+			if(verb == HTTPVerb.HEAD || verb == HTTPVerb.GET || verb == HTTPVerb.TRACE){
+				return new Request(true, HTTPUtil.appendQueryStringToUrl(baseUrl, nvs), verb.toString(), null);
+			}else if(verb == HTTPVerb.POST){
+				return new Request(true, baseUrl, verb.toString(), nvs.toString().getBytes());
+			}else{
+				return new Request(true, baseUrl, verb.toString(), null);
+			}
 		} catch (Exception e) {
-			return new Request(false, null, null, null);
+			return new Request(false, e.getMessage());
 		}
 	}
 	
 	public static Request build(String baseUrl, HTTPVerb verb, NameValueSet nvs){
 		try {
-			return new Request(true, HTTPUtil.appendQueryStringToUrl(new URL(baseUrl), nvs), verb.toString(), null);
+			if(verb == HTTPVerb.HEAD || verb == HTTPVerb.GET || verb == HTTPVerb.TRACE){
+				return new Request(true, HTTPUtil.appendQueryStringToUrl(new URL(baseUrl), nvs), verb.toString(), null);
+			}else if(verb == HTTPVerb.POST){
+				return new Request(true, new URL(baseUrl), verb.toString(), nvs.toString().getBytes());
+			}else{
+				return new Request(true, new URL(baseUrl), verb.toString(), null);
+			}
 		} catch (Exception e) {
-			return new Request(false, null, null, null);
+			return new Request(false, e.getMessage());
+		}
+	}
+	
+	public static Request build(URL baseUrl, HTTPVerb verb, String... parameters){
+		try {
+			if(verb == HTTPVerb.HEAD || verb == HTTPVerb.GET || verb == HTTPVerb.TRACE){
+				return new Request(true, HTTPUtil.appendQueryStringToUrl(baseUrl, NameValueSet.fromStringArray(parameters)), verb.toString(), null);
+			}else if(verb == HTTPVerb.POST){
+				return new Request(true, baseUrl, verb.toString(), NameValueSet.fromStringArray(parameters).toString().getBytes());
+			}else{
+				return new Request(true, baseUrl, verb.toString(), null);
+			}
+		} catch (Exception e) {
+			return new Request(false, e.getMessage());
+		}
+	}
+	
+	public static Request build(String baseUrl, HTTPVerb verb, String... parameters){
+		try {
+			if(verb == HTTPVerb.HEAD || verb == HTTPVerb.GET || verb == HTTPVerb.TRACE){
+				return new Request(true, HTTPUtil.appendQueryStringToUrl(new URL(baseUrl), NameValueSet.fromStringArray(parameters)), verb.toString(), null);
+			}else if(verb == HTTPVerb.POST){
+				return new Request(true, new URL(baseUrl), verb.toString(), NameValueSet.fromStringArray(parameters).toString().getBytes());
+			}else{
+				return new Request(true, new URL(baseUrl), verb.toString(), null);
+			}
+		} catch (Exception e) {
+			return new Request(false, e.getMessage());
 		}
 	}
 }
