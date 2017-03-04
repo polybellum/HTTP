@@ -1,26 +1,41 @@
 package polybellum.HTTP;
 
+/*/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////// IMPORT LIBRARIES //////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////*/
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
+/**
+ * A class representing a Set of Name/Value Pairs
+ * 
+ * @author Nic Wilson (mtear)
+ *
+ */
 public class NameValueSet {
 	
+/*__///////////////////////////////////////////////////////////////////////////////////////////////
+____/////////////////////////////// MEMBER VARIABLES //////////////////////////////////////////////
+____/////////////////////////////////////////////////////////////////////////////////////////////*/
+
+	/**
+	 * A list of Name/Value Pairs
+	 */
 	private ArrayList<NameValuePair> _parameters = new ArrayList<NameValuePair>();
 	
-	public void put(String name, String value){
-		_parameters.add(new NameValuePair(name, value));
-	}
-	
-	public String toQueryString(){
-		return toParameterString("?");
-	}
-	
-	@Override
-	public String toString(){
-		return toParameterString("");
-	}
-	
+/*__///////////////////////////////////////////////////////////////////////////////////////////////
+____/////////////////////////////// PRIVATE METHODS ///////////////////////////////////////////////
+____/////////////////////////////////////////////////////////////////////////////////////////////*/
+
+	/**
+	 * Format this set of Name/Value pairs into a name=value& format with the specified starting
+	 * string
+	 * 
+	 * @param startString The string to start with
+	 * @return This set of pairs formatted as a String
+	 */
 	private String toParameterString(String startString){
 		String returnValue = startString;
 		try{
@@ -36,24 +51,54 @@ public class NameValueSet {
 		return returnValue.substring(0, returnValue.length()-1);
 	}
 	
+/*__///////////////////////////////////////////////////////////////////////////////////////////////
+____/////////////////////////////// PUBLIC METHODS ////////////////////////////////////////////////
+____/////////////////////////////////////////////////////////////////////////////////////////////*/
+
+	/**
+	 * Put a value into the Name Value Set
+	 * 
+	 * @param name A Name
+	 * @param value A Value
+	 */
+	public void put(String name, String value){
+		_parameters.add(new NameValuePair(name, value));
+	}
+	
+	/**
+	 * Get the size of this Name Value Set
+	 * 
+	 * @return How many parameters are set in the Name Value Set
+	 */
 	public int size(){
 		return _parameters.size();
 	}
 	
-	private class NameValuePair{
-		private String _name, _value;
-		public NameValuePair(String name, String value){
-			_name = name;
-			_value = value;
-		}
-		public String getName(){
-			return _name;
-		}
-		public String getValue(){
-			return _value;
-		}
+	/**
+	 * Return the Name Value pairs formatted as a Query String
+	 * 
+	 * @return The Name Value pairs formatted as a Query String
+	 */
+	public String toQueryString(){
+		return toParameterString("?");
 	}
 	
+	@Override
+	public String toString(){
+		return toParameterString("");
+	}
+	
+/*__///////////////////////////////////////////////////////////////////////////////////////////////
+____//////////////////////////// PUBLIC STATIC METHODS ////////////////////////////////////////////
+____/////////////////////////////////////////////////////////////////////////////////////////////*/
+	
+	/**
+	 * Create a Name Value Set from a String array
+	 * 
+	 * @param parameters The names and values to put into the set
+	 * @return A built Name Value Set from the parameters
+	 * @throws Exception If there is an odd number of parameters an exception will be throwns
+	 */
 	public static NameValueSet fromStringArray(String... parameters) throws Exception{
 		if(parameters.length % 2 == 1){
 			throw new Exception("Must have an even number of parameters.");
@@ -70,6 +115,66 @@ public class NameValueSet {
 			}
 		}
 		return nvs;
+	}
+
+/*__///////////////////////////////////////////////////////////////////////////////////////////////
+____/////////////////////////////// PRIVATE CLASSES ///////////////////////////////////////////////
+____/////////////////////////////////////////////////////////////////////////////////////////////*/
+
+	/**
+	 * A basic Name/Value Pair class
+	 * 
+	 * @author Nic Wilson (mtear)
+	 *
+	 */
+	private class NameValuePair{
+		
+	/*__///////////////////////////////////////////////////////////////////////////////////////////
+	____/////////////////////////// MEMBER VARIABLES //////////////////////////////////////////////
+	____/////////////////////////////////////////////////////////////////////////////////////////*/
+
+		/**
+		 * The name and value parameters for this Name/Value pair
+		 */
+		private String _name, _value;
+		
+	/*__///////////////////////////////////////////////////////////////////////////////////////////
+	____///////////////////////////// CONSTRUCTORS ////////////////////////////////////////////////
+	____/////////////////////////////////////////////////////////////////////////////////////////*/
+		
+		/**
+		 * Initialize the values for this Name/Value pair
+		 * 
+		 * @param name The Name value
+		 * @param value The Value value
+		 */
+		public NameValuePair(String name, String value){
+			_name = name;
+			_value = value;
+		}
+		
+	/*__///////////////////////////////////////////////////////////////////////////////////////////
+	____/////////////////////////// PUBLIC METHODS ////////////////////////////////////////////////
+	____/////////////////////////////////////////////////////////////////////////////////////////*/
+
+		/**
+		 * Getter for the Name value
+		 * 
+		 * @return The name
+		 */
+		public String getName(){
+			return _name;
+		}
+		
+		/**
+		 * Getter for the Value value
+		 * 
+		 * @return The value
+		 */
+		public String getValue(){
+			return _value;
+		}
+		
 	}
 	
 }
