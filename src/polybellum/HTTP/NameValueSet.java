@@ -26,8 +26,8 @@ public class NameValueSet {
 		try{
 			for(NameValuePair nvp : _parameters){
 				returnValue += String.format("%s=%s&",
-						URLEncoder.encode(nvp.getName(), Charsets.UTF_8),
-						URLEncoder.encode(nvp.getValue(), Charsets.UTF_8));
+						URLEncoder.encode(nvp.getName(), Charset.UTF_8.toString()),
+						URLEncoder.encode(nvp.getValue(), Charset.UTF_8.toString()));
 			}
 		}catch(UnsupportedEncodingException e){
 			e.printStackTrace();
