@@ -1,4 +1,4 @@
-package polybellum.HTTPUtils;
+package polybellum.HTTP;
 
 public class HTTPResponse extends Response{
 	

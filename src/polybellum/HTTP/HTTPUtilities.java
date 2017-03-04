@@ -1,4 +1,4 @@
-package polybellum.HTTPUtils;
+package polybellum.HTTP;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

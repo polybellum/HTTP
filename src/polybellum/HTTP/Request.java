@@ -1,4 +1,4 @@
-package polybellum.HTTPUtils;
+package polybellum.HTTP;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -24,6 +24,18 @@ public class Request {
 	
 	public byte[] getDataBytes(){
 		return _dataBytes;
+	}
+	
+	public static Request build(URL url, String verb){
+		return new Request(url, verb, null);
+	}
+	
+	public static Request build(String url, String verb){
+		try{
+			return new Request(new URL(url), verb, null);
+		}catch(MalformedURLException e){
+			return null;
+		}
 	}
 	
 	public static Request build(URL url, String verb, byte[] dataBytes){

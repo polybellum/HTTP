@@ -1,7 +1,7 @@
-package polybellum.HTTPUtils;
+package polybellum.HTTP;
 
-public class SimpleWebClient extends WebClient {
-	public SimpleWebClient(){
+public class SimpleHttpClient extends HttpClient {
+	public SimpleHttpClient(){
 		setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 		this.setConnectTimeout(8000);
 		this.setReadTimeout(60000);

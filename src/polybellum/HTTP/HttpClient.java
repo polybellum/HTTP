@@ -1,4 +1,4 @@
-package polybellum.HTTPUtils;
+package polybellum.HTTP;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,13 +9,13 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 
-public class WebClient {
+public class HttpClient {
 
 	private HashMap<String, String> _connectionProperties;
 	private int _connectTimeout = 0;
 	private int _readTimeout = 0;
 	
-	public WebClient(){
+	public HttpClient(){
 		_connectionProperties = new HashMap<String, String>();
 	}
 	
@@ -34,7 +34,7 @@ public class WebClient {
 	public Response get(URL baseUrl, String... queryParameters){
 		try {
 			URL url = appendQueryStringToUrl(baseUrl, queryParameters);
-			return httpRequest(url, HTTP.GET, null);
+			return httpRequest(url, HTTPVerbs.GET.toString(), null);
 		} catch (Exception e) {
 			return new ExceptionResponse(e.getMessage());
 		}
@@ -43,7 +43,7 @@ public class WebClient {
 	public Response get(URL baseUrl, NameValueSet nvs){
 		try {
 			URL url = appendQueryStringToUrl(baseUrl, nvs);
-			return httpRequest(url, HTTP.GET, null);
+			return httpRequest(url, HTTPVerbs.GET.toString(), null);
 		} catch (Exception e) {
 			return new ExceptionResponse(e.getMessage());
 		}
@@ -84,7 +84,7 @@ public class WebClient {
 	}
 	
 	public Response post(URL baseUrl, byte[] data){
-		return httpRequest(baseUrl, HTTP.POST, data);
+		return httpRequest(baseUrl, HTTPVerbs.POST.toString(), data);
 	}
 	
 	public Response post(URL baseURL, String... data){
@@ -136,7 +136,7 @@ public class WebClient {
 	}
 	
 	public Response put(URL url, byte[] data){
-		return httpRequest(url, HTTP.PUT, data);
+		return httpRequest(url, HTTPVerbs.PUT.toString(), data);
 	}
 	
 	public Response put(URL url, String data){
@@ -180,7 +180,7 @@ public class WebClient {
 	}
 	
 	public Response delete(URL url){
-		return httpRequest(url, HTTP.DELETE, null);
+		return httpRequest(url, HTTPVerbs.DELETE.toString(), null);
 	}
 	
 	public Response head(String url){
@@ -192,11 +192,11 @@ public class WebClient {
 	}
 	
 	public Response head(URL url){
-		return httpRequest(url, HTTP.HEAD, null);
+		return httpRequest(url, HTTPVerbs.HEAD.toString(), null);
 	}
 	
 	public Response options(URL baseUrl, byte[] data){
-		return httpRequest(baseUrl, HTTP.OPTIONS, data);
+		return httpRequest(baseUrl, HTTPVerbs.OPTIONS.toString(), data);
 	}
 	
 	public Response options(URL baseURL, String... data){
@@ -240,7 +240,7 @@ public class WebClient {
 	}
 	
 	public Response trace(URL baseUrl, byte[] data){
-		return httpRequest(baseUrl, HTTP.TRACE, data);
+		return httpRequest(baseUrl, HTTPVerbs.TRACE.toString(), data);
 	}
 	
 	public Response trace(URL baseURL, String... data){
@@ -337,19 +337,19 @@ public class WebClient {
 	}
 	
 	public Response execute(Request request){
-		if(request.getVerb().equals(HTTP.GET)){
+		if(request.getVerb().equals(HTTPVerbs.GET.toString())){
 			return get(request.getURL());
-		}else if(request.getVerb().equals(HTTP.POST)){
+		}else if(request.getVerb().equals(HTTPVerbs.POST.toString())){
 			return post(request.getURL(), request.getDataBytes());
-		}else if(request.getVerb().equals(HTTP.HEAD)){
+		}else if(request.getVerb().equals(HTTPVerbs.HEAD.toString())){
 			return head(request.getURL());
-		}else if(request.getVerb().equals(HTTP.PUT)){
+		}else if(request.getVerb().equals(HTTPVerbs.PUT.toString())){
 			return put(request.getURL(), request.getDataBytes());
-		}else if(request.getVerb().equals(HTTP.OPTIONS)){
+		}else if(request.getVerb().equals(HTTPVerbs.OPTIONS.toString())){
 			return options(request.getURL(), request.getDataBytes());
-		}else if(request.getVerb().equals(HTTP.TRACE)){
+		}else if(request.getVerb().equals(HTTPVerbs.TRACE.toString())){
 			return trace(request.getURL(), request.getDataBytes());
-		}else if(request.getVerb().equals(HTTP.DELETE)){
+		}else if(request.getVerb().equals(HTTPVerbs.DELETE.toString())){
 			return delete(request.getURL());
 		}else{
 			return new ExceptionResponse("A valid HTTP verb must be specified.");
