@@ -1,6 +1,6 @@
 package polybellum.HTTP;
 
-public enum HTTPVerb {
+public enum HttpVerb {
 	GET("GET"),
 	POST("POST"),
 	HEAD("HEAD"),
@@ -10,7 +10,7 @@ public enum HTTPVerb {
 	TRACE("TRACE");
 	
 	private String _verb;
-	HTTPVerb(String verb){
+	HttpVerb(String verb){
 		_verb = verb;
 	}
 	

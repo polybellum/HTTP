@@ -52,11 +52,11 @@ public class Request {
 		}
 	}
 	
-	public static Request build(URL url, HTTPVerb verb, byte[] dataBytes){
+	public static Request build(URL url, HttpVerb verb, byte[] dataBytes){
 		return new Request(true, url, verb.toString(), dataBytes);
 	}
 	
-	public static Request build(String url, HTTPVerb verb, byte[] dataBytes){
+	public static Request build(String url, HttpVerb verb, byte[] dataBytes){
 		try{
 			return new Request(true, new URL(url), verb.toString(), dataBytes);
 		}catch(MalformedURLException e){
@@ -64,11 +64,11 @@ public class Request {
 		}
 	}
 	
-	public static Request build(URL baseUrl, HTTPVerb verb, NameValueSet nvs){
+	public static Request build(URL baseUrl, HttpVerb verb, NameValueSet nvs){
 		try {
-			if(verb == HTTPVerb.HEAD || verb == HTTPVerb.GET || verb == HTTPVerb.TRACE){
-				return new Request(true, HTTPUtil.appendQueryStringToUrl(baseUrl, nvs), verb.toString(), null);
-			}else if(verb == HTTPVerb.POST){
+			if(verb == HttpVerb.HEAD || verb == HttpVerb.GET || verb == HttpVerb.TRACE){
+				return new Request(true, HttpUtil.appendQueryStringToUrl(baseUrl, nvs), verb.toString(), null);
+			}else if(verb == HttpVerb.POST){
 				return new Request(true, baseUrl, verb.toString(), nvs.toString().getBytes());
 			}else{
 				return new Request(true, baseUrl, verb.toString(), null);
@@ -78,11 +78,11 @@ public class Request {
 		}
 	}
 	
-	public static Request build(String baseUrl, HTTPVerb verb, NameValueSet nvs){
+	public static Request build(String baseUrl, HttpVerb verb, NameValueSet nvs){
 		try {
-			if(verb == HTTPVerb.HEAD || verb == HTTPVerb.GET || verb == HTTPVerb.TRACE){
-				return new Request(true, HTTPUtil.appendQueryStringToUrl(new URL(baseUrl), nvs), verb.toString(), null);
-			}else if(verb == HTTPVerb.POST){
+			if(verb == HttpVerb.HEAD || verb == HttpVerb.GET || verb == HttpVerb.TRACE){
+				return new Request(true, HttpUtil.appendQueryStringToUrl(new URL(baseUrl), nvs), verb.toString(), null);
+			}else if(verb == HttpVerb.POST){
 				return new Request(true, new URL(baseUrl), verb.toString(), nvs.toString().getBytes());
 			}else{
 				return new Request(true, new URL(baseUrl), verb.toString(), null);
@@ -92,11 +92,11 @@ public class Request {
 		}
 	}
 	
-	public static Request build(URL baseUrl, HTTPVerb verb, String... parameters){
+	public static Request build(URL baseUrl, HttpVerb verb, String... parameters){
 		try {
-			if(verb == HTTPVerb.HEAD || verb == HTTPVerb.GET || verb == HTTPVerb.TRACE){
-				return new Request(true, HTTPUtil.appendQueryStringToUrl(baseUrl, NameValueSet.fromStringArray(parameters)), verb.toString(), null);
-			}else if(verb == HTTPVerb.POST){
+			if(verb == HttpVerb.HEAD || verb == HttpVerb.GET || verb == HttpVerb.TRACE){
+				return new Request(true, HttpUtil.appendQueryStringToUrl(baseUrl, NameValueSet.fromStringArray(parameters)), verb.toString(), null);
+			}else if(verb == HttpVerb.POST){
 				return new Request(true, baseUrl, verb.toString(), NameValueSet.fromStringArray(parameters).toString().getBytes());
 			}else{
 				return new Request(true, baseUrl, verb.toString(), null);
@@ -106,11 +106,11 @@ public class Request {
 		}
 	}
 	
-	public static Request build(String baseUrl, HTTPVerb verb, String... parameters){
+	public static Request build(String baseUrl, HttpVerb verb, String... parameters){
 		try {
-			if(verb == HTTPVerb.HEAD || verb == HTTPVerb.GET || verb == HTTPVerb.TRACE){
-				return new Request(true, HTTPUtil.appendQueryStringToUrl(new URL(baseUrl), NameValueSet.fromStringArray(parameters)), verb.toString(), null);
-			}else if(verb == HTTPVerb.POST){
+			if(verb == HttpVerb.HEAD || verb == HttpVerb.GET || verb == HttpVerb.TRACE){
+				return new Request(true, HttpUtil.appendQueryStringToUrl(new URL(baseUrl), NameValueSet.fromStringArray(parameters)), verb.toString(), null);
+			}else if(verb == HttpVerb.POST){
 				return new Request(true, new URL(baseUrl), verb.toString(), NameValueSet.fromStringArray(parameters).toString().getBytes());
 			}else{
 				return new Request(true, new URL(baseUrl), verb.toString(), null);

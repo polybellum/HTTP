@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-public class HTTPUtil {
+public class HttpUtil {
 	private final static int BYTE_CHUNK = 4096;
 	
 	public static byte[] readInputStreamBytes(InputStream inputStream) throws IOException{
