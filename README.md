@@ -11,12 +11,12 @@ Use this library with jitpack! Add jitpack support to your Gradle file.
 
 ```
 repositories {
-        jcenter()
-        maven { url "https://jitpack.io" }
-   }
-   dependencies {
-         compile 'com.github.polybellum:HTTP:-SNAPSHOT'
-   }
+    jcenter()
+    maven { url "https://jitpack.io" }
+}
+dependencies {
+    compile 'com.github.polybellum:HTTP:-SNAPSHOT'
+}
 ```  
   
   
