@@ -1,4 +1,4 @@
-# polybellum HTTP Library  
+# polybellum Http Library  
   
 Written by Nic Wilson @mtear (github.com/mtear)  
 

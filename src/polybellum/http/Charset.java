@@ -1,7 +1,7 @@
 // Copyright (C) 2017 polybellum
 // Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
 	
-package polybellum.HTTP;
+package polybellum.http;
 
 /**
  * An enum to hold values representing different String encodings
