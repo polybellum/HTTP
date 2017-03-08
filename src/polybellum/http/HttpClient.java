@@ -79,6 +79,14 @@ ____////////////////////////////////////////////////////////////////////////////
 			}
 			//Set the connection properties and begin connecting
 			connection = prepareConnection(url, method, outputData != null);
+			
+			//Check the response code and abort if not valid
+			int responseCode = connection.getResponseCode();
+			if(responseCode < 200 || responseCode > 299){
+				return new HttpResponse(responseCode,
+						new String("HTTP code: " + responseCode).getBytes());
+			}
+				
 			//Write the data if we are writing data
 			if(outputData != null){
 				OutputStream wr = connection.getOutputStream();
@@ -87,7 +95,7 @@ ____////////////////////////////////////////////////////////////////////////////
 			}
 			//Read the response from the server
 			inputStream = connection.getInputStream();
-			return new HttpResponse(connection.getResponseCode(), 
+			return new HttpResponse(responseCode, 
 					HttpUtil.readInputStreamBytes(inputStream));
 		}
 		catch (IOException e) { //There was an error reading/writing
